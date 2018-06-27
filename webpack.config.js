@@ -1,4 +1,5 @@
 module.exports = {
+  mode:'development',
   entry: [
     './src/index.js'
   ],
@@ -8,13 +9,19 @@ module.exports = {
     filename: 'bundle.js'
   },
   module: {
-    loaders: [{
+    rules: [{
+      test:   /\.js$/,
       exclude: /node_modules/,
-      loader: 'babel'
+      use: {
+        loader: 'babel-loader',
+        options: {
+          presets:['@babel/preset-env']
+        }
+      }
     }]
   },
   resolve: {
-    extensions: ['', '.js', '.jsx']
+    extensions: ['.js', '.jsx']
   },
   devServer: {
     historyApiFallback: true,

@@ -56,8 +56,8 @@
 <!-- buttons -->
 <button id="copylinkButton" style="display: none;">Copy Link to Clipboard</button>
 
-<button id="reTrack" onclick="restartTracking();" disabled="disabled" style="display: none;">Restart Tracking</button>
-<button id="start" onclick="startTask();" disabled="disabled" style="display: none;">Start</button>
+<button id="reTrack" onclick="restartTracking();" style="display: none;">Restart Tracking</button> <!--disabled="disabled"-->
+<button id="start" onclick="startTask();" style="display: none;">Start</button> <!--disabled="disabled"-->
 <button id="replayButton" onclick="visReset();" style="display: none;">Visualize Results</button>
 <button id="downloadButton" onclick="download();" style="display: none;">Download Data</button>
 <button id="quitFullScreenButton" onclick="quitfullscreen();" disabled="disabled" style="display: none;">Quit Full Screen</button>
@@ -155,7 +155,7 @@ WebFontConfig.ready(function(){
 </script>
 <script src="//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js"></script>
 
-
+<script src="src/webcam.js"></script>
 <script type="text/javascript">
 // get user media
 function hasGetUserMedia() {
@@ -167,17 +167,18 @@ Webcam.set({
   width: 640,
   height: 360,
   image_format: 'jpeg',
-  jpeg_quality: 90
+  jpeg_quality: 90,
+  swfURL: 'src/webcam.swf'
 });
 Webcam.attach( '#imgCanvas' );
-// var streamVideo = document.createElement('video'); // video stream
-var streamVideo = document.getElementById('imgCanvas').children[1];
+var streamVideo = document.createElement('video'); // video stream
+// var streamVideo = document.getElementById('imgCanvas').children[1];
 function getMedia(){
   // instruction: get camera access
   $("#warningP").html(instrMsg.camaccess);
   $('#warningP').show();
-  // if (hasGetUserMedia()) {
-  //  navigator.getUserMedia(getUserMediaConstraints, function(stream) {
+  if (hasGetUserMedia()) {
+   navigator.getUserMedia(getUserMediaConstraints, function(stream) {
       // video stream
         streamVideo.muted = true;
         streamVideo.volume = 0;
@@ -196,20 +197,20 @@ function getMedia(){
       // turn on speaker
         $("#warningP").html('Please turn on the sound for better experience.');
 
-  //     }, function() {
-  //         $("#warningP").html(instrMsg.refreshcamaccess);
-  //     });
-  // } else {
-  //  alert('getUserMedia() is not supported in your browser');
-  //  $("#warningP").html(instrMsg.cameranotsupport);
-  // }// getUserMedia
+      }, function() {
+          $("#warningP").html(instrMsg.refreshcamaccess);
+      });
+  } else {
+   alert('getUserMedia() is not supported in your browser');
+   $("#warningP").html(instrMsg.cameranotsupport);
+  }// getUserMedia
 }
 
 // onload document
 $(document).ready(function() {
   $('#instrmsgP').css({'max-width':"80%", "top":"51%","left":"10%","right":"10%"});
   $('#instrmsgP').show();
-  if(bowser.name != 'Chrome'){ // test web browser: terminate if not google chrome  
+  if(bowser.name != 'Chrome') { // test web browser: terminate if not google chrome  
     alert(instrMsg.webbrowser);
     // instruction: copy address
     $("#instrmsgP").html(instrMsg.copylink);
@@ -287,7 +288,7 @@ function setUpCanvas(){
   $('#instrimgdiv').show();
   $('#hitsummary').show();
   $('#fullscreenButton').css({"background-color":"#A4A4A4", 'color':'#eeeeee'});
-  $('#fullscreenButton').prop('disabled', true);
+  $('#fullscreenButton').prop('disabled', false); // viral
 
   var w = $('#instrimgdiv').width();
   $('#instrimgdiv').css({'height':(w/5)});

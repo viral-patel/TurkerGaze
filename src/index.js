@@ -1,1 +1,1 @@
-require('script!webcamjs');
+import "webcamjs";
