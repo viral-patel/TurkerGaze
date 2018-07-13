@@ -12,7 +12,8 @@ var clmpm = {
 		if (params.stopOnConvergence === undefined) params.stopOnConvergence = false;
 		if (params.weightPoints === undefined) params.weightPoints = undefined;
 		if (params.sharpenResponse === undefined) params.sharpenResponse = false;
-		
+		if (params.faceDetection === undefined) params.faceDetection = {};
+				
 		var numPatches, patchSize, numParameters, patchType;
 		var gaussianPD;
 		var eigenVectors, eigenValues;

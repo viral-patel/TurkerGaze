@@ -400,7 +400,7 @@ function checkTipsLoading(){
     $('#slider').hide();
 
     // set up canvas
-        setUpCanvas();
+    setUpCanvas();
     return;
   }
 }

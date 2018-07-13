@@ -32,20 +32,23 @@ visBttnColor = "#3399FF", copyBttnColor = "#3399FF";
 // getUserMedia setting
 var hdW = 1280, hdH = 720; // high resolution canvas
 var fps = 30;
-var getUserMediaConstraints = {
- "audio": false,
- "video": {
-  "mandatory": {
-   "minWidth": hdW,
-   "minHeight": hdH,
-   "minFrameRate": fps,
-   "maxWidth": hdW,
-   "maxHeight": hdH,
-   "maxFrameRate": fps
-  },
-  "optional": []
- }
-};
+
+var getUserMediaConstraints = { audio: true, video: {width: 1280, height: 720} };
+
+// var getUserMediaConstraints = {
+//  "audio": false,
+//  "video": {
+//   "mandatory": {
+//   "minWidth": hdW,
+//   "minHeight": hdH,
+//   "minFrameRate": fps,
+//   "maxWidth": hdW,
+//    "maxHeight": hdH,
+//    "maxFrameRate": fps
+//   },
+//   "optional": []
+//  }
+// };
 
 // full screen 
 var pfx = ["webkit", "moz", "ms", "o", ""];

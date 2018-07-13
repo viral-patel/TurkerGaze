@@ -414,9 +414,9 @@ function computeAverageIntensity(ctx, x, y, w, h){
     var pixels = imageData.data;
     var meanval = 0;
     for(var i = 0; i < w*h; i++){
-        meanval += pixels[i*4];
-        meanval += pixels[i*4+1];
-        meanval += pixels[i*4+2];
+        meanval += pixels[i*3];
+        meanval += pixels[i*3+1];
+        meanval += pixels[i*3+2];
     }
     return meanval/(w*h*3);
 }
