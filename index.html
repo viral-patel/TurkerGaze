@@ -8,7 +8,7 @@
   <meta name="owner" content="Princeton Vision Group"/>
   <link rel="shortcut icon" href="./styles/logo/pu_logo.png"/>
   <link rel="stylesheet" type="text/css" href="./styles/main.css">
-  <!-- <link rel="stylesheet" href="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/css/bootstrap.css"> -->
+<!-- <link rel="stylesheet" href="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/css/bootstrap.css"> -->
 </head>
 
 <body>
@@ -56,11 +56,11 @@
 <!-- buttons -->
 <button id="copylinkButton" style="display: none;">Copy Link to Clipboard</button>
 
-<button id="reTrack" onclick="restartTracking();" style="display: none;" disabled="disabled">Restart Tracking</button>
-<button id="start" onclick="startTask();" style="display: none;" disabled="disabled">Start</button>
-<button id="replayButton" onclick="visReset();" style="display: none;">Visualize Results</button>
-<button id="downloadButton" onclick="download();" style="display: none;">Download Data</button>
-<button id="quitFullScreenButton" onclick="quitfullscreen();" disabled="disabled" style="display: none;">Quit Full Screen</button>
+<button type="button" id="reTrack" onclick="restartTracking();" style="display: none;" disabled="disabled">Restart Tracking</button>
+<button type="button" id="start" onclick="startTask();return false;" style="display: none;z-index:5000000!important;" disabled="disabled">Start</button>
+<button type="button" id="replayButton" onclick="visReset();" style="display: none;">Visualize Results</button>
+<button type="button" id="downloadButton" onclick="download();" style="display: none;">Download Data</button>
+<button type="button" id="quitFullScreenButton" onclick="quitfullscreen();" disabled="disabled" style="display: none;">Quit Full Screen</button>
 <!-- instruction message -->
 <p id="instrmsgP" style="display: none;"></p>
 <p id="statusmsgP" style="display: none;"></p>

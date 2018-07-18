@@ -21,6 +21,10 @@ button{
 	cursor:pointer;
 	outline: 0;
 }
+button:disabled,
+button[disabled=disabled] {
+	background-color: #A4A4A4
+}
 button:hover{
 	color: #e0e0e0;
 	background-color:#3399FF;
@@ -288,7 +292,7 @@ p{
 }
 
 #tipsdiv, #tips0, #tips1, #tips2, #tips3, #tips4{
-	position:absolute;	
+	position:absolute;
 }
 
 #tipssec0,#tipssec1,#tipssec2,#tipssec3,#tipssec4{

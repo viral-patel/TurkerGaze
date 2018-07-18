@@ -33,7 +33,7 @@ visBttnColor = "#3399FF", copyBttnColor = "#3399FF";
 var hdW = 1280, hdH = 720; // high resolution canvas
 var fps = 30;
 
-var getUserMediaConstraints = { audio: true, video: {width: 1280, height: 720} };
+var getUserMediaConstraints = { audio: false, video: {width: 1280, height: 720} };
 
 // var getUserMediaConstraints = {
 //  "audio": false,
@@ -79,7 +79,7 @@ var cvsshift = -360, cvsmargin = 40;
 // massage bar
 var barw = showW, barh = 50;
 // video stream	
-var localSream;
+var localStream;
 // video recorder
 var recordW = 320,recordH = 180;
 var recorder = null, ImageData; // store video frames

@@ -362,7 +362,8 @@ var cntTipsLoaded = 0;
 function createTipsSection(){
   checkTipsLoading();
   // set up DOM section for tips 
-  var y = sH - tipimgSize - tipimgSpacing - 120;
+  // var y = sH - tipimgSize - tipimgSpacing - 120;
+  var y = sH - tipimgSize - tipimgSpacing - 60;
   $('#tipsdiv').css({"left": 0, "top": y});
   var numtips = tipsimggroup.length;
   var x = (sW - numtips*tipimgSize - (numtips+1)*tipimgSpacing)/2;
@@ -400,7 +401,7 @@ function checkTipsLoading(){
     $('#slider').hide();
 
     // set up canvas
-    setUpCanvas();
+      setUpCanvas();
     return;
   }
 }

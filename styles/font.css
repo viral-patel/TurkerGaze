@@ -1,12 +1,15 @@
 @font-face {
     font-family: lcd;
     src: url(./font/lcd.ttf);
+    font-display: optional;
 }
 @font-face {
     font-family: digital;
     src: url(./font/digital.ttf);
+    font-display: optional;
 }
 @font-face {
     font-family: zorque;
     src: url(./font/zorque.ttf);
+    font-display: optional;
 }

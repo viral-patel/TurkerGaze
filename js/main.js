@@ -180,10 +180,97 @@ function enterFullScreen(){
     }
   });
   
-  setTimeout(function() {checkFullscreenOn();}, 3000); // constantly check fullscreen
+  setTimeout(function() {checkFullscreenOn();}, 7000); // constantly check fullscreen
   startTracking(); // start facial landmark tracking
 }
 
+// start experiment
+function startTask(){
+    RESTART = false;
+    $('#tipsdiv').hide();
+    var positions = ctrackr.getCurrentPosition();
+    if (checkLdmkValidity(positions) != ''){return;} 
+    // hide cursor
+    $('#fullscreen').css('cursor','none');
+    $('#fsoverlay').css('cursor','none');
+    $('#instrmsgP').css('cursor','none');
+    fsoverlayCtx.clearRect(0, 0, sW, sH); 
+    $('#fsoverlay').hide();
+  
+    prev_positions = null; // detect rapid change in facial landmark location
+  
+    // initialize the histogram extractor: eye width and height
+    var ew =  Math.abs(positions[23][0]+positions[30][0]-positions[25][0]-positions[28][0])/2;
+    var eh = Math.abs(positions[24][1]+positions[29][1]-positions[26][1]-positions[31][1])/2;
+    ew = Math.max(ew, eh/eyepatchratio);
+    eh = Math.max(eh, ew*eyepatchratio);
+  
+    optionColorhist.pw = ew * colorhistmargin;
+    optionColorhist.ph = eh * colorhistmargin; 
+    colorhist = new normalizedHist.hist(optionColorhist);
+    patchsize[0] = colorhist.patchwidth();
+    patchsize[1] = colorhist.patchheight();
+  
+    // initialize queue for training, testing, raw data collection
+    trainQueue = [], testQueue = [], blankQueue = [], dataQueue = [], detectQueue = [], displayQueue = [], timeQueue = [];
+    memActionQueue = []; pigQueue = [];
+    
+    // bilateral setting
+    bfilterQ = new Array(bfilterLen);
+    bfilterCnt = 0;
+    
+    // optical flow setting
+    opticlflw_para.pw = patchsize[0];
+    opticlflw_para.ph = patchsize[1];
+    opticlflw_para.w = trckW;
+    opticlflw_para.h = trckH;
+    opticlflw = new OpticalFlow(opticlflw_idx, opticlflw_mp_idx, positions, opticlflw_para);
+    
+    // online prediction 
+    model_online = null;
+  
+    if (TEST_STABILIZATION){
+      $('#opticalflow').show();
+      ofCanvas = document.getElementById('opticalflow');
+      ofCanvas.style.position = "absolute";
+      displayElm2Center('#opticalflow', sW, sH+cvsshift-200);
+      ofCtx = ofCanvas.getContext('2d');
+      drawstabilization();
+    }else{
+      cancelRequestAnimFrame(displayLdmkRequest); // stop display tracking instruction
+      cancelRequestAnimFrame(displayStreamRequest); // stop streaming
+      // hide elements
+      $('#imgCanvas').hide();
+      $('#overlay').hide();
+      $('#msgoverlay').hide();
+      $('#reTrack').hide();
+      $('#start').hide();
+      $('#statusmsgP').hide();
+      $('#instrmsgP').hide();
+      // show elements
+      ctx.fillStyle = pointBckColor;
+      ctx.fillRect(0,0,sW,sH);
+      $('#fullscreen').show();
+  
+      // initialzie recorder
+      recorder = new VideoRecorder(localStream, recordW, recordH);
+      ImageData = '';
+  
+      // start facial landmark tracking
+      ldmktracking();
+  
+      // set buffer time for toggling screen to fullsize
+      setTimeout(function() {
+        recorder.start(); // start recording
+        curposdisplay = 0;
+        $('#instrmsgP').css('color',fsmsgColor);
+        display(expsequence); // start display images on screen
+        DISPLAYON = true;
+      }, 10000);
+    }
+  }
+
+  
 // restart the whole experiment
 function restartTask(msg){
   if(MOLETEST){
@@ -260,7 +347,6 @@ function startTracking(){
   $("#statusmsgP").show();
   // initialize tracker
   ctrackr = new clmpm.tracker({useWebGL : true});
-//   ctrackr = new clm.tracker({useWebGL : true});
   ctrackr.init(pModel);
   // tracking
   facialLdmkTrackingDisplay();
@@ -315,7 +401,8 @@ function facialLdmkTrackingDisplay(){
   if(validldmk){
     $("#statusmsgP").html(statusMsg.clickrestart);
     if(DISPLAYON == false && DISPLAYDOTON == false && ABTEST == false){
-      if($('#start').attr('disabled') == "disabled"){
+      // if($('#start').attr('disabled') == "disabled"){
+      if($('#start').prop('disabled')) {
         $('#start').prop('disabled', false);
         $('#start').css("backgroundColor", startBttnColor);
         $('#start').css( "color", '#424242');
@@ -323,11 +410,16 @@ function facialLdmkTrackingDisplay(){
               function(){$(this).css({'color':'#eeeeee', "backgroundColor":startBttnColor});},
               function(){$(this).css({'color':'#424242', "backgroundColor":startBttnColor});}
         );
+        // $('#start').removeAttr('disabled');
+        // document.getElementById('start').removeAttribute('disabled');
+        // document.getElementById('start').disabled = false;
+        $('#start').off('click').click(startTask);
       }
     }
-  }else{
-    if($('#start').attr('disabled') != "disabled"){
-      $('#start').prop('disabled', true);
+  } else {
+    // if($('#start').attr('disabled') != "disabled"){
+    if(!$('#start').prop('disabled')) {
+      $('#start').prop("disabled", true);
       $('#start').css( "color", '#eeeeee');
       $('#start').css( "backgroundColor", disableBttnColor);
     }
@@ -337,91 +429,6 @@ function facialLdmkTrackingDisplay(){
   $("#statusmsgP").css({'top': (sH+cvsshift-$('#msgoverlay').height())/2+barh/2-$("#statusmsgP").height()/2});
 }
 
-// start experiment
-function startTask(){
-  RESTART = false;
-  $('#tipsdiv').hide();
-  var positions = ctrackr.getCurrentPosition();
-  if (checkLdmkValidity(positions) != ''){return;} 
-  // hide cursor
-  $('#fullscreen').css('cursor','none');
-  $('#fsoverlay').css('cursor','none');
-  $('#instrmsgP').css('cursor','none');
-  fsoverlayCtx.clearRect(0, 0, sW, sH); 
-  $('#fsoverlay').hide();
-
-  prev_positions = null; // detect rapid change in facial landmark location
-
-  // initialize the histogram extractor: eye width and height
-  var ew =  Math.abs(positions[23][0]+positions[30][0]-positions[25][0]-positions[28][0])/2;
-  var eh = Math.abs(positions[24][1]+positions[29][1]-positions[26][1]-positions[31][1])/2;
-  ew = Math.max(ew, eh/eyepatchratio);
-  eh = Math.max(eh, ew*eyepatchratio);
-
-  optionColorhist.pw = ew * colorhistmargin;
-  optionColorhist.ph = eh * colorhistmargin; 
-  colorhist = new normalizedHist.hist(optionColorhist);
-  patchsize[0] = colorhist.patchwidth();
-  patchsize[1] = colorhist.patchheight();
-
-  // initialize queue for training, testing, raw data collection
-  trainQueue = [], testQueue = [], blankQueue = [], dataQueue = [], detectQueue = [], displayQueue = [], timeQueue = [];
-  memActionQueue = []; pigQueue = [];
-  
-  // bilateral setting
-    bfilterQ = new Array(bfilterLen);
-  bfilterCnt = 0;
-  
-  // optical flow setting
-  opticlflw_para.pw = patchsize[0];
-  opticlflw_para.ph = patchsize[1];
-  opticlflw_para.w = trckW;
-  opticlflw_para.h = trckH;
-  opticlflw = new OpticalFlow(opticlflw_idx, opticlflw_mp_idx, positions, opticlflw_para);
-  
-  // online prediction
-  model_online = null;
-
-  if (TEST_STABILIZATION){
-    $('#opticalflow').show();
-    ofCanvas = document.getElementById('opticalflow');
-    ofCanvas.style.position = "absolute";
-    displayElm2Center('#opticalflow', sW, sH+cvsshift-200);
-    ofCtx = ofCanvas.getContext('2d');
-    drawstabilization();
-  }else{
-    cancelRequestAnimFrame(displayLdmkRequest); // stop display tracking instruction
-    cancelRequestAnimFrame(displayStreamRequest); // stop streaming
-    // hide elements
-    $('#imgCanvas').hide();
-    $('#overlay').hide();
-    $('#msgoverlay').hide();
-    $('#reTrack').hide();
-    $('#start').hide();
-    $('#statusmsgP').hide();
-    $('#instrmsgP').hide();
-    // show elements
-    ctx.fillStyle = pointBckColor;
-    ctx.fillRect(0,0,sW,sH);
-    $('#fullscreen').show();
-
-    // initialzie recorder
-    recorder = new VideoRecorder(localStream, recordW, recordH);
-    ImageData = '';
-
-    // start facial landmark tracking
-    ldmktracking();
-
-    // set buffer time for toggling screen to fullsize
-    setTimeout(function() {
-      recorder.start(); // start recording
-      curposdisplay = 0;
-      $('#instrmsgP').css('color',fsmsgColor);
-      display(expsequence); // start display images on screen
-      DISPLAYON = true;
-    }, 10000);
-  }
-}
 
 function ldmktracking(){
   ldmkTrackRequest = requestAnimFrame(ldmktracking);
@@ -999,7 +1006,8 @@ function VideoRecorder(mediaStream,width,height) {
     video.muted = true;
     video.volume = 0;
     video.autoplay = true;
-    video.src = URL.createObjectURL(mediaStream);
+    // video.src = URL.createObjectURL(mediaStream);
+    video.srcObject = mediaStream;
     video.play();
     var lastAnimationFrame = null;
     var lastFrameTime;
