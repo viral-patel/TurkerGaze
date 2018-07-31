@@ -134,7 +134,7 @@ function setUpCanvas(){
   $('#instrimgdiv').show();
   $('#hitsummary').show();
   $('#fullscreenButton').css({"background-color":"#A4A4A4", 'color':'#eeeeee'});
-  $('#fullscreenButton').prop('disabled', false); // viral
+  $('#fullscreenButton').prop('disabled', true);
 
   var w = $('#instrimgdiv').width();
   $('#instrimgdiv').css({'height':(w/5)});
@@ -169,7 +169,7 @@ function enterFullScreen(){
   $('#warningP').hide();
   // toggle full screen
   $('#fscontent').css({'width':sW, 'height':sH});
-  toggleFullScreenOnEle("content");
+  toggleFullScreenOnEle("sabkabaap");
   $(document).bind('keydown', function fn(event) 
   { 
     if(event.keyCode == 81){ // 'q'
@@ -404,16 +404,12 @@ function facialLdmkTrackingDisplay(){
       // if($('#start').attr('disabled') == "disabled"){
       if($('#start').prop('disabled')) {
         $('#start').prop('disabled', false);
-        $('#start').css("backgroundColor", startBttnColor);
+        $('#start').css( "backgroundColor", startBttnColor);
         $('#start').css( "color", '#424242');
         $('#start').hover(
               function(){$(this).css({'color':'#eeeeee', "backgroundColor":startBttnColor});},
               function(){$(this).css({'color':'#424242', "backgroundColor":startBttnColor});}
         );
-        // $('#start').removeAttr('disabled');
-        // document.getElementById('start').removeAttribute('disabled');
-        // document.getElementById('start').disabled = false;
-        $('#start').off('click').click(startTask);
       }
     }
   } else {

@@ -7,6 +7,7 @@ body {
 	min-width:800px; 
 	min-height:700px; 
 	cursor: auto;	
+	pointer-events: none;
 }
 /*button*/
 button{
@@ -20,6 +21,7 @@ button{
 	border-radius: 10px;
 	cursor:pointer;
 	outline: 0;
+	pointer-events: auto;
 }
 button:disabled,
 button[disabled=disabled] {
@@ -38,6 +40,9 @@ button:hover{
 #reTrack:hover{
 	background-color:#FF4455;
 }
+/* #start {
+	pointer-events: all;
+} */
 #start, #closeWinButton{
 	background-color:#A4A4A4;
 }
@@ -71,6 +76,7 @@ p{
 	padding: 10px;
 	border-style: solid;
 	-webkit-border-radius: 10px;
+	pointer-events: none;
 }
 #hitsummary{
 	-webkit-border-radius: 10px;
@@ -197,6 +203,7 @@ p{
 /*full-screen*/
 #fullscreen{
 	cursor: auto;
+	pointer-events: none;
 }
 #fullscreen:-webkit-full-screen
 {
@@ -207,6 +214,7 @@ p{
 	margin: 0;
 	border: 0 none;
 	background-color: #f00;
+	pointer-events: none;
 }
 #fullscreen:full-screen
 {
@@ -216,6 +224,7 @@ p{
 	padding: 0;
 	margin: 0;
 	border: 0 none;
+	pointer-events: none;
 }
 
 #fsoverlay:-webkit-full-screen
@@ -227,6 +236,7 @@ p{
 	margin: 0;
 	border: 0 none;
 	background-color: #f00;
+	pointer-events: none;
 }
 #fsoverlay:full-screen
 {
@@ -236,6 +246,7 @@ p{
 	padding: 0;
 	margin: 0;
 	border: 0 none;
+	pointer-events: none;
 }
 
 @-webkit-keyframes FadeInOut4 {

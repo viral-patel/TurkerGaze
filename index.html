@@ -12,6 +12,7 @@
 </head>
 
 <body>
+<div id="sabkabaap">
 
 <table id="content" style="display: none;"> 
   <tr>
@@ -57,7 +58,7 @@
 <button id="copylinkButton" style="display: none;">Copy Link to Clipboard</button>
 
 <button type="button" id="reTrack" onclick="restartTracking();" style="display: none;" disabled="disabled">Restart Tracking</button>
-<button type="button" id="start" onclick="startTask();return false;" style="display: none;z-index:5000000!important;" disabled="disabled">Start</button>
+<button type="button" id="start" onclick="startTask();return false;" style="display: none;" disabled="disabled">Start</button>
 <button type="button" id="replayButton" onclick="visReset();" style="display: none;">Visualize Results</button>
 <button type="button" id="downloadButton" onclick="download();" style="display: none;">Download Data</button>
 <button type="button" id="quitFullScreenButton" onclick="quitfullscreen();" disabled="disabled" style="display: none;">Quit Full Screen</button>
@@ -80,7 +81,7 @@
 <button id="finishmemtestButton" onclick="finishMemTest();" style="display: none;">GREAT, SUBMIT!</button>
 <!-- icons for tips -->
 <div id="tipsdiv" style="display: none;"></div>
-
+</div>
 <script src="./bundle.js"></script>
 
 <!-- js library -->
